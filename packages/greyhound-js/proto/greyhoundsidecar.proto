@@ -7,9 +7,9 @@ import "google/protobuf/timestamp.proto";
 package com.wixpress.dst.greyhound.sidecar.api.v1;
 
 service GreyhoundSidecar {
-    rpc Register(RegisterRequest) returns (RegisterResponse);
     rpc Produce (ProduceRequest) returns (ProduceResponse);
     rpc CreateTopics (CreateTopicsRequest) returns (CreateTopicsResponse);
+    rpc Register(RegisterRequest) returns (RegisterResponse);
     rpc StartConsuming (StartConsumingRequest) returns (StartConsumingResponse);
 }
 
@@ -19,7 +19,6 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-    string registration_id = 1;
 }
 
 message StartConsumingRequest {
@@ -27,7 +26,6 @@ message StartConsumingRequest {
 }
 
 message Consumer {
-    string id = 1;
     string group = 2;
     string topic = 3;
 }
