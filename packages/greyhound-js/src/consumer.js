@@ -1,28 +1,30 @@
-const factory = require("./greyhound_service_grpc_client"),
+const factory = require("./greyhound_client_factory"),
   client = factory.getClient(),
   {GroupTopicPair} = require("./group_topic_pair");
-
-const GREYHOUND_CONSUMER_SERVER_HOST = "0.0.0.0",
-  GREYHOUND_CONSUMER_SERVER_PORT = "9092";
 
 class Consumer {
   constructor(host, port) {
     this.host = host;
     this.port = port;
     this.registry = new Map();
+    this.registeredToGreyhound = false;
   }
 
-  registerCallback() {
+  subscribe(groupTopicPair, callback) {
+
   }
   
-  
-}
-function register(callback) {
-  
-}
+  unsubscribe(groupTopicPair, callback) {
 
-function startConsuming(...consumers) {
+  }
   
+  startConsuming(...consumers) {
+    
+  }
+
+  dispose() {
+
+  }
 }
 
 module.exports = {};

@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wix-incubator/greyhound-js.git" 
+    "url": "git+https://github.com/wix-incubator/greyhound-js.git"
   },
   "author": "Tomer Shafir",
   "license": "MIT",
