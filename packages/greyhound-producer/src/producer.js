@@ -4,17 +4,21 @@ const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 
 const PROTO_PATH = `${__dirname}/../proto/greyhoundsidecar.proto`;
-const GREYHOUND_SIDECAR_IP = "0.0.0.0";
-const GREYHOUND_SIDECAR_PORT = "8080";
+const GREYHOUND_IP = "0.0.0.0";
+const GREYHOUND_PORT = "8080";
 
 const packageDefinition = protoLoader.loadSync(
   PROTO_PATH,
   {keepCase: true,
   longs: String,
   enums: String,
-  defaults: true,oneofs: true});
-const greyhoundsidecarProto = grpc.loadPackageDefinition(packageDefinition);
-const client = new greyhoundsidecarProto.GreyhoundSidecar(`${GREYHOUND_SIDECAR_IP}:${GREYHOUND_SIDECAR_PORT}`, grpc.credentials.createInsecure());
+  defaults: true,
+  oneofs: true});
+// console.log(JSON.stringify(packageDefinition));
+const greyhoundsidecarProto = grpc.loadPackageDefinition(packageDefinition).com.wixpress.dst.greyhound.sidecar.api.v1;
+console.log(JSON.stringify(greyhoundsidecarProto));
+// console.log(">>> " + greyhoundsidecarProto.GreyhoundSidecar);
+const client = new greyhoundsidecarProto.GreyhoundSidecar(`${GREYHOUND_IP}:${GREYHOUND_PORT}`, grpc.credentials.createInsecure());
 
 function produce(topicName, payload, target, headers) {
   // TODO: add validation
