@@ -1,4 +1,4 @@
-const {Topic} = require("../../topics");
+const {NewTopic} = require("./new_topic.js");
 const prettylog = require("../../console/log")
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
@@ -37,4 +37,4 @@ function createTopics(topics) {
   prettylog.log(`Requested topic creation: ${JSON.stringify(topics)}`);
 }
 
-module.exports = {Topic, produce, createTopic, createTopics};
+module.exports = {NewTopic, produce, createTopic, createTopics};

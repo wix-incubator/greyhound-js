@@ -1,4 +1,4 @@
-class Topic {
+class NewTopic {
   constructor(name, numberOfPartitions) {
     // TODO: add validation
     this.name = name;
@@ -6,4 +6,4 @@ class Topic {
   }
 }
 
-module.exports = {Topic};
+module.exports = {NewTopic};
