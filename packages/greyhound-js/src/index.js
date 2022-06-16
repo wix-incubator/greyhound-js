@@ -1,1 +1,1 @@
-module.exports = require("./producer.js");
+module.exports = {producer: require("./producer.js"), consumer: require("./consumer.js")};
