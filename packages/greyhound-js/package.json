@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/wix-incubator/greyhound-js#readme",
   "dependencies": {
-    "@grpc/grpc-js": "^1.6.7"
+    "@grpc/grpc-js": "^1.6.7",
+    "google-protobuf": "^3.20.1"
   },
   "devDependencies": {
     "grpc-tools": "^1.11.2"
