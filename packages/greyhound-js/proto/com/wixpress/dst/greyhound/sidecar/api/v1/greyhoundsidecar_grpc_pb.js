@@ -4,8 +4,6 @@
 var grpc = require('@grpc/grpc-js');
 var proto_com_wixpress_dst_greyhound_sidecar_api_v1_greyhoundsidecar_pb = require('../../../../../../../../proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecar_pb.js');
 var google_protobuf_wrappers_pb = require('google-protobuf/google/protobuf/wrappers_pb.js');
-var google_protobuf_struct_pb = require('google-protobuf/google/protobuf/struct_pb.js');
-var google_protobuf_timestamp_pb = require('google-protobuf/google/protobuf/timestamp_pb.js');
 
 function serialize_com_wixpress_dst_greyhound_sidecar_api_v1_CreateTopicsRequest(arg) {
   if (!(arg instanceof proto_com_wixpress_dst_greyhound_sidecar_api_v1_greyhoundsidecar_pb.CreateTopicsRequest)) {

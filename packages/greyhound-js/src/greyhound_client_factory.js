@@ -1,21 +1,8 @@
-const grpc = require('@grpc/grpc-js'),
-  protoLoader = require('@grpc/proto-loader');
-
-const PROTO_PATH = `${__dirname}/../proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecar.proto`;
-
+const grpc = require('@grpc/grpc-js');
+const services = require('../proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecar_grpc_pb');
+  
 function getClient(host, port) {
-  const packageDefinition = protoLoader.loadSync(
-    PROTO_PATH,
-    {keepCase: true,
-    longs: String,
-    enums: String,
-    defaults: true,
-    oneofs: true});
-  // console.log(JSON.stringify(packageDefinition));
-  const greyhoundsidecarProto = grpc.loadPackageDefinition(packageDefinition).com.wixpress.dst.greyhound.sidecar.api.v1;
-  console.log(JSON.stringify(greyhoundsidecarProto));
-  // console.log(">>> " + greyhoundsidecarProto.GreyhoundSidecar);
-  return new greyhoundsidecarProto.GreyhoundSidecar(`${host}:${port}`, grpc.credentials.createInsecure());  
+  return client = new services.GreyhoundSidecarClient(`${host}:${port}`, grpc.credentials.createInsecure());
 }
 
 module.exports = {getClient};
