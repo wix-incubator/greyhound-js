@@ -1,6 +1,7 @@
 const {NewTopic} = require("./new_topic.js"),
   factory = require("./greyhound_client_factory.js"),
-  config = require("./greyhound_default_config.js");
+  config = require("./greyhound_default_config.js"),
+  messages = require("../proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecar_pb.js");
 
 class Producer {
   constructor(host, port) {
@@ -10,7 +11,12 @@ class Producer {
   }
 
   produce(topicName, payload, target, headers) {
-    client.produce({topic: topicName, payload: payload ? {value: payload} : null, target, headers});
+    const request = new messages.ProduceRequest();
+    request.setTopic(topicName);
+    request.setPayload(payload ? payload : null);
+    request.setTarget(target);
+    // request.customHeadersMap = ;
+    this.client.produce(request);
     console.log(`Produced a message to Greyhound: {"topicName": "${topicName}"}`);
   }
   
@@ -19,7 +25,9 @@ class Producer {
   }
   
   createTopics(...topics) {
-    client.createTopics(...(topics.map(topic => {return {name: topic.name, partitions: topic.numOfPartitions ? {value: topic.numOfPartitions} : null};})));
+    const request = new messages.CreateTopicsRequest();
+    request.setTopicsList(topics.map(topic => {return {name: topic.name, partitions: topic.numberOfPartitions ? topic.numberOfPartitions : null};}));
+    this.client.createTopics(request);
     console.log(`Requested topic creation: ${JSON.stringify(topics)}`);
   }
 }
