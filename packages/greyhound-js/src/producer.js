@@ -1,13 +1,12 @@
 const {NewTopic} = require("./new_topic.js"),
   factory = require("./greyhound_client_factory.js"),
-  config = require("./greyhound_default_config.js"),
   messages = require("../proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecar_pb.js");
 
 class Producer {
-  constructor(host, port) {
-    this.host = host ? host : config.GREYHOUND_HOST;
-    this.port = port ? port : config.GREYHOUND_PORT;
-    this.client = factory.getClient(host, port);
+  constructor(ghHost, ghPort) {
+    this.ghHost = ghHost;
+    this.ghPort = ghPort;
+    this.client = factory.getClient(ghHost, ghPort);
   }
 
   produce(topicName, payload, target, headers) {
