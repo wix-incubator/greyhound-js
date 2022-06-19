@@ -1,6 +1,0 @@
-module.exports = {
-  GREYHOUND_CONSUMER_SERVER_HOST: "localhost",
-  GREYHOUND_CONSUMER_SERVER_PORT: "9092",
-  GREYHOUND_HOST: "localhost",
-  GREYHOUND_PORT: "8080"
-}
