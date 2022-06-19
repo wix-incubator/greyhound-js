@@ -1,0 +1,28 @@
+{
+  "name": "greyhound-js",
+  "version": "1.0.0",
+  "description": "Greyhound client library for Javascript",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pbgen": "./node_modules/.bin/grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./ --grpc_out=grpc_js:./ \"${@}\"",
+    "pbgen-all": "npm run pbgen \"proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecaruser.proto\" \"proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecar.proto\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wix-incubator/greyhound-js.git"
+  },
+  "author": "Tomer Shafir",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wix-incubator/greyhound-js/issues"
+  },
+  "homepage": "https://github.com/wix-incubator/greyhound-js#readme",
+  "dependencies": {
+    "@grpc/grpc-js": "^1.6.7",
+    "google-protobuf": "^3.20.1"
+  },
+  "devDependencies": {
+    "grpc-tools": "^1.11.2"
+  }
+}
