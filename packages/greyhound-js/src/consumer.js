@@ -43,14 +43,16 @@ class Consumer {
     if (!this.registeredToGreyhound) {
       this.server = new grpc.Server();
       this.server.addService(services.GreyhoundSidecarUserService, {handleMessages});
+
       new Promise((resolve, reject) => {
         this.server.bindAsync(`${this.consumerHost}:${this.consumerPort}`, grpc.ServerCredentials.createInsecure(), () => {
           this.server.start();
+          console.log("Started consumer server");
           resolve();
         });
       })
-      .then(registerToGreyhound(this))
-      .then(callStartConsuming(this, groupTopicPairs));
+      .then(() => {return registerToGreyhound(this)})
+      .then(() => {return callStartConsuming(this, groupTopicPairs)});
     } else
       callStartConsuming(this, groupTopicPairs);
   }
@@ -65,20 +67,6 @@ function validateIsFunction(fn) {
     throw new Error("Illegal argument");
 }
 
-function registerToGreyhound(consumer) {
-  const request = new messages.RegisterRequest();
-    
-  request.setHost(consumer.consumerHost);
-  request.setPort(consumer.consumerPort);
-
-  consumer.client.register(request, (err, response) => {
-    if (err && err.code && err.details)
-      console.log(`Error trying to register to Greyhound: {"code": ${err.code}, "details": "${err.details}"}`);
-    else
-      console.log(`Registered to Greyhound`);
-  });
-}
-
 function handleMessages(call, callback) {
   const request = call.request;
 
@@ -88,17 +76,41 @@ function handleMessages(call, callback) {
   callback(null, new messages.HandleMessagesResponse());
 }
 
+function registerToGreyhound(consumer) {
+  const request = new messages.RegisterRequest();
+    
+  request.setHost(consumer.consumerHost);
+  request.setPort(consumer.consumerPort);
+
+  return new Promise((resolve, reject) => {
+    consumer.client.register(request, (err, response) => {
+      if (err && err.code && err.details)
+        console.log(`Error trying to register to Greyhound: {"code": ${err.code}, "details": "${err.details}"}`);
+      else
+        console.log(`Registered to Greyhound`);
+      resolve();
+  })});
+}
+
 function callStartConsuming(consumer, groupTopicPairs) {
   const request = new messages.StartConsumingRequest();
+  
+  request.setConsumersList(groupTopicPairs.map(pair => {
+    const consumer = new messages.Consumer();
+    consumer.setGroup(pair.group);
+    consumer.setTopic(pair.topic);
+    return consumer;
+  }));
 
-  // request.setConsumers
-
-  consumer.client.startConsuming(request, (err, response) => {
-    if (err && err.code && err.details)
-      console.log(`Error trying to start consuming: {"code": ${err.code}, "details": "${err.details}"}`);
-    else
-      console.log(`Started consuming`);
-  }); 
+  return new Promise((resolve, reject) => {
+    consumer.client.startConsuming(request, (err, response) => {
+      if (err && err.code && err.details)
+        console.log(`Error trying to start consuming: {"code": ${err.code}, "details": "${err.details}"}`);
+      else
+        console.log(`Started consuming`);
+      resolve();
+    }); 
+  });
 }
 
 module.exports = {Consumer, GroupTopicPair};
