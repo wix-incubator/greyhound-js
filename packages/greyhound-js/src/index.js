@@ -1,3 +1,3 @@
-const {Producer, NewTopic} = require("./producer.js");
-const {Consumer, GroupTopicPair} = require("./consumer");
-module.exports = {Producer, NewTopic, Consumer, GroupTopicPair};
+const {Producer, NewTopic} = require("./greyhound_producer.js"),
+  {Consumer, GroupAndTopic} = require("./greyhound_consumer");
+module.exports = {Producer, NewTopic, Consumer, GroupAndTopic};

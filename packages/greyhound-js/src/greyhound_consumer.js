@@ -1,5 +1,5 @@
 const factory = require("./greyhound_client_factory"),
-  {GroupTopicPair, validateGroupTopicPairArg} = require("./group_topic_pair"),
+  {GroupAndTopic, validateGroupAndTopic} = require("./topics"),
   messages = require("../proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecaruser_pb.js"),
   services = require("../proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecaruser_grpc_pb.js"),
   grpc = require('@grpc/grpc-js');
@@ -16,30 +16,30 @@ class Consumer {
     this.server = null;
   }
 
-  subscribe(groupTopicPair, callback) {
-    validateGroupTopicPairArg(groupTopicPair);
+  subscribe(groupAndTopic, callback) {
+    validateGroupAndTopic(groupAndTopic);
     validateIsFunction(callback);    
     
     if (!this.registry.has())
-      this.registry.set(groupTopicPair, []);
-    this.registry.get(groupTopicPair).push(callback);
+      this.registry.set(groupAndTopic, []);
+    this.registry.get(groupAndTopic).push(callback);
   }
   
-  unsubscribe(groupTopicPair, callback) {
-    validateGroupTopicPairArg(groupTopicPair);
+  unsubscribe(groupAndTopic, callback) {
+    validateGroupAndTopic(groupAndTopic);
     validateIsFunction(callback);    
     
-    const cbs = this.registry.get(groupTopicPair);
+    const cbs = this.registry.get(groupAndTopic);
     if (cbs) {
       const filtered = cbs.filter(cb => cb != callback);
       if (cbs.length < 1)
-        this.registry.delete(groupTopicPair);
+        this.registry.delete(groupAndTopic);
       else
-        this.registry.set(groupTopicPair, filtered);
+        this.registry.set(groupAndTopic, filtered);
     }
   }
   
-  startConsuming(...groupTopicPairs) {
+  startConsuming(...groupAndTopics) {
     if (!this.registeredToGreyhound) {
       this.server = new grpc.Server();
       this.server.addService(services.GreyhoundSidecarUserService, {handleMessages});
@@ -52,9 +52,9 @@ class Consumer {
         });
       })
       .then(() => {return registerToGreyhound(this)})
-      .then(() => {return callStartConsuming(this, groupTopicPairs)});
+      .then(() => {return callStartConsuming(this, groupAndTopics)});
     } else
-      callStartConsuming(this, groupTopicPairs);
+      callStartConsuming(this, groupAndTopics);
   }
 
   shutdown() {
@@ -92,10 +92,10 @@ function registerToGreyhound(consumer) {
   })});
 }
 
-function callStartConsuming(consumer, groupTopicPairs) {
+function callStartConsuming(consumer, groupAndTopics) {
   const request = new messages.StartConsumingRequest();
   
-  request.setConsumersList(groupTopicPairs.map(pair => {
+  request.setConsumersList(groupAndTopics.map(pair => {
     const consumer = new messages.Consumer();
     consumer.setGroup(pair.group);
     consumer.setTopic(pair.topic);
@@ -113,4 +113,4 @@ function callStartConsuming(consumer, groupTopicPairs) {
   });
 }
 
-module.exports = {Consumer, GroupTopicPair};
+module.exports = {Consumer, GroupAndTopic};
