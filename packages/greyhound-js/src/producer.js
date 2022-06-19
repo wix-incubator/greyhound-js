@@ -7,17 +7,23 @@ class Producer {
   constructor(host, port) {
     this.host = host ? host : config.GREYHOUND_HOST;
     this.port = port ? port : config.GREYHOUND_PORT;
-    this.client = factory.getClient(port, host);
+    this.client = factory.getClient(host, port);
   }
 
   produce(topicName, payload, target, headers) {
     const request = new messages.ProduceRequest();
+    
     request.setTopic(topicName);
-    request.setPayload(payload ? payload : null);
-    request.setTarget(target);
+    // request.setPayload(payload ? payload : null);
+    // request.setTarget(target);
     // request.customHeadersMap = ;
-    this.client.produce(request);
-    console.log(`Produced a message to Greyhound: {"topicName": "${topicName}"}`);
+
+    this.client.produce(request, (err, response) => {
+      if (err.code && err.details)
+        console.log(`Error trying to produce: {"code": ${err.code}, "details": "${err.details}"}`);
+      else
+        console.log(`Produced a message to Greyhound`);
+    });
   }
   
   createTopic(topic) {
@@ -26,9 +32,23 @@ class Producer {
   
   createTopics(...topics) {
     const request = new messages.CreateTopicsRequest();
-    request.setTopicsList(topics.map(topic => {return {name: topic.name, partitions: topic.numberOfPartitions ? topic.numberOfPartitions : null};}));
-    this.client.createTopics(request);
-    console.log(`Requested topic creation: ${JSON.stringify(topics)}`);
+    
+    request.setTopicsList(topics.map(topic => {
+      const topicToCreate = new messages.TopicToCreate();
+
+      topicToCreate.setName(topic.name);
+      // topicToCreate.setPartitions(1);
+      // topicToCreate.setPartitions(topic.numberOfPartitions ? topic.numberOfPartitions : null);
+      
+      return topicToCreate;
+    }));
+
+    this.client.createTopics(request, (err, response) => {
+      if (err && err.code && err.details)
+        console.log(`Error creating topics: {"code": ${err.code}, "details": "${err.details}"}`);
+      else
+        console.log(`Requested topics creation: ${JSON.stringify(topics.map(topic => topic.name))}`);
+    });
   }
 }
 
