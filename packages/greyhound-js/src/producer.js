@@ -19,7 +19,7 @@ class Producer {
     // request.customHeadersMap = ;
 
     this.client.produce(request, (err, response) => {
-      if (err.code && err.details)
+      if (err && err.code && err.details)
         console.log(`Error trying to produce: {"code": ${err.code}, "details": "${err.details}"}`);
       else
         console.log(`Produced a message to Greyhound`);
