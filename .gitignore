@@ -43,3 +43,4 @@ dist
 .dynamodb/
 .tern-port
 package-lock.json
+.DS_Store
