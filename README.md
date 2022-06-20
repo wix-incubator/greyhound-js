@@ -1,6 +1,6 @@
 # greyhound-js
 
-A vanilla Javascript client library for [Greyhound](https://github.com/wix/greyhound/blob/master/docs/non-jvm-languages.md) integration with Greyhound deployed as a seperate process, particulary as a sidecar.
+A vanilla Javascript client library for [Greyhound process](https://github.com/wix/greyhound/blob/master/docs/non-jvm-languages.md) integration with Greyhound deployed as a seperate process, particulary as a sidecar.
 
 ## What is Greyhound?
 
