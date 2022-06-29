@@ -9,7 +9,7 @@ class Consumer {
     this.ghHost = ghHost;
     this.ghPort = ghPort;
     this.consumerHost = "localhost";
-    this.consumerPort = 8080;
+    this.consumerPort = "8080";
     this.registry = new Map();
     this.registeredToGreyhound = false;
     this.client = factory.getClient(ghHost, ghPort);
