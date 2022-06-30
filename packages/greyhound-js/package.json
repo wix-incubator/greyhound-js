@@ -4,7 +4,7 @@
   "description": "Greyhound client library for Javascript",
   "main": "./src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node ./test/it.js",
     "pbgen": "./node_modules/.bin/grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./ --grpc_out=grpc_js:./ \"${@}\"",
     "pbgen-all": "npm run pbgen \"proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecaruser.proto\" \"proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecar.proto\""
   },
