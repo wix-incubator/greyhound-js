@@ -26,5 +26,3 @@ clean_modules:
 
 echo_debug:
 	@echo "${debug}"
-
-debug = false

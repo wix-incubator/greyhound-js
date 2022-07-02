@@ -1,0 +1,40 @@
+#!/bin/sh
+#
+# Configures makefile for greyhound-js
+#
+# Globals:
+#   None
+# Options:
+#   --debug: configures debug mode makefile
+#   --non-debug: configures non-debug mode makefile
+# Arguments:
+#   None
+# Outputs:
+#   Stores configuration in the makefile using a temp file
+# Returns:
+#   0 if configuration succeeded, non-zero otherwise
+#######################################
+
+debug=false
+
+for arg in "$@"; do
+  case "$arg" in
+    --debug)
+      debug=true;;
+    --non-debug)
+      debug=false;;
+    --help)
+      echo "usage: ./configure [options]"
+      echo "options:"
+      echo "  --debug: configures debug mode makefile"
+      echo "  --non-debug: configures non-debug mode makefile"
+      echo "all invalid options are silently ignored"
+      exit 0
+      ;;
+  esac
+done
+
+echo "configuring makefile ..."
+cat Makefile.in >Makefile
+echo "\ndebug = ${debug}" >>Makefile
+echo "configuration completed"
