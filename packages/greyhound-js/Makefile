@@ -27,4 +27,7 @@ clean_modules:
 echo_debug:
 	@echo "${debug}"
 
+echo_shell:
+	@echo "$(SHELL)"
+
 debug = false
