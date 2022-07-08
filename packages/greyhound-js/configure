@@ -21,7 +21,7 @@ for arg in "$@"; do
   case "$arg" in
     --debug)
       debug=true;;
-    --non-debug)
+    --no-debug)
       debug=false;;
     --help)
       echo "usage: ./configure [options]"
