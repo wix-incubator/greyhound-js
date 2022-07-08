@@ -15,14 +15,14 @@
 #   0 if configuration succeeded, non-zero otherwise
 #######################################
 
-debug=false
+debug=0
 
 for arg in "$@"; do
   case "$arg" in
     --debug)
-      debug=true;;
+      debug=1;;
     --no-debug)
-      debug=false;;
+      debug=0;;
     --help)
       echo "usage: ./configure [options]"
       echo "options:"

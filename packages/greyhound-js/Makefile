@@ -30,4 +30,4 @@ echo_debug:
 echo_shell:
 	@echo "$(SHELL)"
 
-debug = false
+debug = 0
