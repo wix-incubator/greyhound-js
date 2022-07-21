@@ -5,14 +5,14 @@ const factory = require("./greyhound_client_factory"),
   grpc = require('@grpc/grpc-js');
 
 class Consumer {
-  constructor(ghHost, ghPort) {
-    this.ghHost = ghHost;
-    this.ghPort = ghPort;
+  constructor(host, port) {
+    this.host = host;
+    this.port = port;
     this.consumerHost = "localhost";
     this.consumerPort = "8080";
     this.registry = new Map();
     this.registeredToGreyhound = false;
-    this.client = factory.getClient(ghHost, ghPort);
+    this.client = factory.getClient(host, port);
     this.server = null;
   }
 
