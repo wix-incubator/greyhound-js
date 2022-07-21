@@ -1,4 +1,4 @@
-const {NewTopic} = require("./topics.js"),
+const {NewTopic} = require("./new_topic.js"),
   factory = require("./greyhound_client_factory.js"),
   messages = require("../proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecar_pb.js");
 
