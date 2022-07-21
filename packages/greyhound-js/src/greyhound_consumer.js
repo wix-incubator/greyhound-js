@@ -1,8 +1,21 @@
 const factory = require("./greyhound_client_factory"),
-  {GroupAndTopic, validateGroupAndTopic} = require("./group_and_topic"),
   messages = require("../proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecaruser_pb.js"),
   services = require("../proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecaruser_grpc_pb.js"),
   grpc = require('@grpc/grpc-js');
+
+class GroupAndTopic {
+  constructor(group, topic) {
+    this.group = group;
+    this.topic = topic;
+  }
+}
+
+function validateGroupAndTopic(groupAndTopic) {
+  if (!groupAndTopic || !(groupAndTopic instanceof GroupAndTopic) || 
+    !(groupAndTopic.group) || !(groupAndTopic.group instanceof String) || 
+    !(groupAndTopic.topic) || !(groupAndTopic.group instanceof String))
+    throw new Error("Illegal group and topic");
+}
 
 class Consumer {
   constructor(host, port) {
