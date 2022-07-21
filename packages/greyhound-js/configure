@@ -27,7 +27,7 @@ for arg in "$@"; do
       echo "usage: ./configure [options]"
       echo "options:"
       echo "  --debug: configures debug mode makefile"
-      echo "  --non-debug: configures non-debug mode makefile"
+      echo "  --no\-debug: configures no-debug mode makefile"
       echo "all invalid options are silently ignored"
       exit 0
       ;;
