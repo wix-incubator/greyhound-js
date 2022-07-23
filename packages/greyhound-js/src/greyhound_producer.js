@@ -10,8 +10,8 @@ class NewTopic {
 
 function validateNewTopic(newTopic) {
   if (!newTopic || !(newTopic instanceof NewTopic) || 
-    !(newTopic.name) || !(newTopic.name instanceof String) || 
-    !(newTopic.numberOfPartitions) || !(newTopic.numberOfPartitions instanceof Number) || 0 >= newTopic.numberOfPartitions)
+    !(newTopic.name) || !(typeof newTopic.name === "string") || 
+    !(newTopic.numberOfPartitions) || !(typeof newTopic.numberOfPartitions === "number") || 0 >= newTopic.numberOfPartitions)
     throw new Error("Illegal new topic");
 }
 
@@ -21,12 +21,12 @@ class Producer {
   }
 
   produce(topicName, payload, target, headers) {
-    if (!(topicName) || !(topicName instanceof String))
+    if (!(topicName) || !(typeof topicName === "string"))
       throw new Error("Illegal topic name");
-    if (payload ? !(payload instanceof String) : null !== payloadpayload && undefined !== payload && "" !== payload) // TODO: validate that non falsy payload is json
+    if (payload ? !(typeof payload === "string") : null !== payload && undefined !== payload && "" !== payload) // TODO: validate that non falsy payload is json
       throw new Error("Illegal payload");
     // TODO: validate target
-    if (headers ? !(payload instanceof Map) : null !== payloadpayload && undefined !== payload)
+    if (headers ? !(headers instanceof Map) : null !== headers && undefined !== headers)
       throw new Error("Illegal headers");
 
     const request = new messages.ProduceRequest();

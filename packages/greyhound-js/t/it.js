@@ -1,13 +1,12 @@
 const {NewTopic, Producer, Consumer, GroupAndTopic}  = require("../src");
 
 const topicName = "dummy";
-const ghPort = 64417;
 
-const consumer = new Consumer("localhost", ghPort);
+const consumer = new Consumer();
 try {
   consumer.startConsuming(new GroupAndTopic("new", topicName));
     
-  const producer = new Producer("localhost", ghPort);
+  const producer = new Producer();
     
   producer.createTopic(new NewTopic(topicName, 8));
     

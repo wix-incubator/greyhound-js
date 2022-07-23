@@ -12,13 +12,13 @@ class GroupAndTopic {
 
 function validateGroupAndTopic(groupAndTopic) {
   if (!groupAndTopic || !(groupAndTopic instanceof GroupAndTopic) || 
-    !(groupAndTopic.group) || !(groupAndTopic.group instanceof String) || 
-    !(groupAndTopic.topic) || !(groupAndTopic.group instanceof String))
+    !(groupAndTopic.group) || !(typeof groupAndTopic.group === "string") || 
+    !(groupAndTopic.topic) || !(typeof groupAndTopic.topic === "string"))
     throw new Error("Illegal group and topic");
 }
 
 function validateIsFunction(fn) {
-  if (!fn || !(fn instanceof Function))
+  if (!fn || !(typeof fn === "function"))
     throw new Error("Illegal argument");
 }
 
