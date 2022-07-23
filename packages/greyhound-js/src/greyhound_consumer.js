@@ -119,10 +119,12 @@ function register(consumer) {
 
 function doStartConsuming(consumer, groupAndTopics) {
   const request = new messages.StartConsumingRequest();
-  request.setConsumersList(groupAndTopics.map(pair => {
+  request.setConsumersList(groupAndTopics.map(groupAndTopic => {
+    validateGroupAndTopic(groupAndTopic);
+    
     const consumer = new messages.Consumer();
-    consumer.setGroup(pair.group);
-    consumer.setTopic(pair.topic);
+    consumer.setGroup(groupAndTopic.group);
+    consumer.setTopic(groupAndTopic.topic);
     return consumer;
   }));
 
