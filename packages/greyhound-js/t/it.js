@@ -13,6 +13,6 @@ try {
     
   producer.produce(topicName, "{}", {key: "dummy"}, null);    
 } finally {
-    consumer.shutdown();
+    consumer.close();
 }
 // TODO: handle the fact that the node process is not terminated so the build is hang

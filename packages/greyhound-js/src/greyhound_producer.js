@@ -19,7 +19,7 @@ class Producer {
   constructor(host, port) {
     this.host = host;
     this.port = port;
-    this.client = factory.getClient(host, port);
+    this._client = factory.getClient(host, port);
   }
 
   produce(topicName, payload, target, headers) {
@@ -37,11 +37,11 @@ class Producer {
     // request.setTarget(target);
     // request.customHeadersMap = ;
 
-    this.client.produce(request, (err, response) => {
+    this._client.produce(request, (err, response) => {
       if (err && err.code && err.details)
-        console.log(`error: couldn't produce: {"code": ${err.code}, "details": "${err.details}"}`);
+        console.error(`error: couldn't produce: {"code": ${err.code}, "details": "${err.details}"}`);
       else
-        console.log(`Produced a message to Greyhound`);
+        console.log(`produced a message to Greyhound`);
     });
   }
   
@@ -61,11 +61,11 @@ class Producer {
       return topicToCreate;
     }));
 
-    this.client.createTopics(request, (err, response) => {
+    this._client.createTopics(request, (err, response) => {
       if (err && err.code && err.details)
-        console.log(`error: Couldn't create topics: {"code": ${err.code}, "details": "${err.details}"}`);
+        console.error(`error: couldn't create topics: {"code": ${err.code}, "details": "${err.details}"}`);
       else
-        console.log(`Requested topics creation: ${JSON.stringify(topics.map(topic => topic.name))}`);
+        console.log(`requested topics creation: ${JSON.stringify(topics.map(topic => topic.name))}`);
     });
   }
 }

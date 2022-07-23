@@ -4,7 +4,7 @@ const grpc = require('@grpc/grpc-js'),
 let client = null;
 function getClient(host, port) {
   if (null === client) {
-    console.log(`Creating client of Greyhound process which is running at ${host}:${port}`)
+    console.log(`creating client of Greyhound process which is running at ${host}:${port}`)
     client = new services.GreyhoundSidecarClient(`${host}:${port}`, grpc.credentials.createInsecure());
   }
   return client;

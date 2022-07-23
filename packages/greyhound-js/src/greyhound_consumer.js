@@ -17,97 +17,109 @@ function validateGroupAndTopic(groupAndTopic) {
     throw new Error("Illegal group and topic");
 }
 
+function validateIsFunction(fn) {
+  if (!fn || !(fn instanceof Function))
+    throw new Error("Illegal argument");
+}
+
+class GreyhoundRegistry {
+  constructor() {
+    this._registry = new Map();
+  }
+
+  register(groupAndTopic, callback) {
+    validateGroupAndTopic(groupAndTopic);
+    validateIsFunction(callback);    
+    
+    if (!this._registry.has())
+      this._registry.set(groupAndTopic, []);
+    this._registry.get(groupAndTopic).push(callback);
+  }
+  
+  unregister(groupAndTopic, callback) {
+    validateGroupAndTopic(groupAndTopic);
+    validateIsFunction(callback);    
+    
+    const callbacks = this._registry.get(groupAndTopic);
+    if (callbacks) {
+      const filtered = callbacks.filter(cb => cb != callback);
+      if (callbacks.length < 1)
+        this._registry.delete(groupAndTopic);
+      else
+        this._registry.set(groupAndTopic, filtered);
+    }
+  }
+}
+
 class Consumer {
   constructor(host, port) {
     this.host = host;
     this.port = port;
-    this.consumerHost = "localhost";
-    this.consumerPort = "8080";
-    this.registry = new Map();
-    this.registeredToGreyhound = false;
-    this.client = factory.getClient(host, port);
-    this.server = null;
+    this._client = factory.getClient(host, port);
+    this._host = "localhost";
+    this._port = "8080";
+    this._registry = new GreyhoundRegistry();
+    this._registered = false;
+    this._server = null;
   }
 
-  subscribe(groupAndTopic, callback) {
-    validateGroupAndTopic(groupAndTopic);
-    validateIsFunction(callback);    
-    
-    if (!this.registry.has())
-      this.registry.set(groupAndTopic, []);
-    this.registry.get(groupAndTopic).push(callback);
+  register(groupAndTopic, callback) {
+    this._registry.register(groupAndTopic, callback);
   }
   
-  unsubscribe(groupAndTopic, callback) {
-    validateGroupAndTopic(groupAndTopic);
-    validateIsFunction(callback);    
-    
-    const cbs = this.registry.get(groupAndTopic);
-    if (cbs) {
-      const filtered = cbs.filter(cb => cb != callback);
-      if (cbs.length < 1)
-        this.registry.delete(groupAndTopic);
-      else
-        this.registry.set(groupAndTopic, filtered);
-    }
+  unregister(groupAndTopic, callback) {
+    this._registry.unregister(groupAndTopic, callback);
   }
   
   startConsuming(...groupAndTopics) {
-    if (!this.registeredToGreyhound) {
-      this.server = new grpc.Server();
-      this.server.addService(services.GreyhoundSidecarUserService, {handleMessages});
+    if (!this._registered) {
+      this._server = new grpc.Server();
+      this._server.addService(services.GreyhoundSidecarUserService, {handleMessages});
 
       new Promise((resolve, reject) => {
-        this.server.bindAsync(`${this.consumerHost}:${this.consumerPort}`, grpc.ServerCredentials.createInsecure(), () => {
-          this.server.start();
-          console.log("Started consumer server");
+        this._server.bindAsync(`${this._host}:${this._port}`, grpc.ServerCredentials.createInsecure(), () => {
+          this._server.start();
+          console.log("started consumer server");
           resolve();
         });
       })
-      .then(() => {return registerToGreyhound(this)})
-      .then(() => {return callStartConsuming(this, groupAndTopics)});
+      .then(() => {return register(this)})
+      .then(() => {return doStartConsuming(this, groupAndTopics)});
     } else
-      callStartConsuming(this, groupAndTopics);
+      doStartConsuming(this, groupAndTopics);
   }
 
-  shutdown() {
-    this.server.forceShutdown();
+  close() {
+    this._server.forceShutdown();
   }
-}
-
-function validateIsFunction(fn) {
-  if (!fn || !(fn instanceof Function))
-    throw new Error("Illegal argument");
 }
 
 function handleMessages(call, callback) {
   const request = call.request;
 
   // TODO: consumer dispatcher dispatch()
-  console.log(`Handling message from Geryhound: ${JSON.stringify(request)}`);  
+  console.log(`handling message from Geryhound: ${JSON.stringify(request)}`);  
 
   callback(null, new messages.HandleMessagesResponse());
 }
 
-function registerToGreyhound(consumer) {
+function register(consumer) {
   const request = new messages.RegisterRequest();
-    
-  request.setHost(consumer.consumerHost);
-  request.setPort(consumer.consumerPort);
+  request.setHost(consumer._host);
+  request.setPort(consumer._port);
 
   return new Promise((resolve, reject) => {
-    consumer.client.register(request, (err, response) => {
+    consumer._client.register(request, (err, response) => {
       if (err && err.code && err.details)
-        console.log(`Error trying to register to Greyhound: {"code": ${err.code}, "details": "${err.details}"}`);
+        console.error(`error: couldn't register to Greyhound: {"code": ${err.code}, "details": "${err.details}"}`);
       else
-        console.log(`Registered to Greyhound`);
+        console.log(`registered to Greyhound`);
       resolve();
   })});
 }
 
-function callStartConsuming(consumer, groupAndTopics) {
+function doStartConsuming(consumer, groupAndTopics) {
   const request = new messages.StartConsumingRequest();
-  
   request.setConsumersList(groupAndTopics.map(pair => {
     const consumer = new messages.Consumer();
     consumer.setGroup(pair.group);
@@ -116,11 +128,11 @@ function callStartConsuming(consumer, groupAndTopics) {
   }));
 
   return new Promise((resolve, reject) => {
-    consumer.client.startConsuming(request, (err, response) => {
+    consumer._client.startConsuming(request, (err, response) => {
       if (err && err.code && err.details)
-        console.log(`Error trying to start consuming: {"code": ${err.code}, "details": "${err.details}"}`);
+        console.error(`error: couldn't start consuming: {"code": ${err.code}, "details": "${err.details}"}`);
       else
-        console.log(`Started consuming`);
+        console.log(`started consuming`);
       resolve();
     }); 
   });
