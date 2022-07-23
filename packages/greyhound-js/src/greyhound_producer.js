@@ -16,10 +16,8 @@ function validateNewTopic(newTopic) {
 }
 
 class Producer {
-  constructor(host, port) {
-    this.host = host;
-    this.port = port;
-    this._client = factory.getClient(host, port);
+  constructor() {
+    this._client = factory.getClient();
   }
 
   produce(topicName, payload, target, headers) {

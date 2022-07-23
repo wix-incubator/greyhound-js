@@ -52,10 +52,8 @@ class GreyhoundRegistry {
 }
 
 class Consumer {
-  constructor(host, port) {
-    this.host = host;
-    this.port = port;
-    this._client = factory.getClient(host, port);
+  constructor() {
+    this._client = factory.getClient();
     this._host = "localhost";
     this._port = "8080";
     this._registry = new GreyhoundRegistry();
