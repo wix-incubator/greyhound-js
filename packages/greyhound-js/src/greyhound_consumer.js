@@ -51,11 +51,12 @@ class GreyhoundRegistry {
   }
 }
 
+const _host = process.env.GHCONSUMERHOST ? process.env.GHCONSUMERHOST : "localhost",
+  _port = process.env.GHCONSUMERPORT ? process.env.GHCONSUMERPORT : "2194";
+
 class Consumer {
   constructor() {
     this._client = factory.getClient();
-    this._host = "localhost";
-    this._port = "8080";
     this._registry = new GreyhoundRegistry();
     this._registered = false;
     this._server = null;
@@ -75,7 +76,7 @@ class Consumer {
       this._server.addService(services.GreyhoundSidecarUserService, {handleMessages});
 
       new Promise((resolve, reject) => {
-        this._server.bindAsync(`${this._host}:${this._port}`, grpc.ServerCredentials.createInsecure(), () => {
+        this._server.bindAsync(`${_host}:${_port}`, grpc.ServerCredentials.createInsecure(), () => {
           this._server.start();
           console.log("started consumer server");
           resolve();
@@ -103,8 +104,8 @@ function handleMessages(call, callback) {
 
 function register(consumer) {
   const request = new messages.RegisterRequest();
-  request.setHost(consumer._host);
-  request.setPort(consumer._port);
+  request.setHost(_host);
+  request.setPort(_port);
 
   return new Promise((resolve, reject) => {
     consumer._client.register(request, (err, response) => {

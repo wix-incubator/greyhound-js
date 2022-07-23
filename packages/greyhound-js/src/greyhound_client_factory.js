@@ -1,8 +1,8 @@
 const grpc = require('@grpc/grpc-js'),
   services = require('../proto/com/wixpress/dst/greyhound/sidecar/api/v1/greyhoundsidecar_grpc_pb');
 
-const host = process.env.GREYHOUNDHOST ? process.env.GREYHOUNDHOST : "localhost",
-  port = process.env.GREYHOUNDPORT ? process.env.GREYHOUNDPORT : "3735";
+const host = process.env.GHHOST ? process.env.GHHOST : "localhost",
+  port = process.env.GHPORT ? process.env.GHPORT : "3735";
 
 let client = null;
 function getClient() {
